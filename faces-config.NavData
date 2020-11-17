@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scene Scope="Project" version="2">
     <Scope Scope="Faces Configuration Only"/>
-    <Scope Scope="Project"/>
+    <Scope Scope="Project">
+        <Node id="plantilla/ninoprincipal.xhtml" x="329" y="67" zoom="true"/>
+        <Node id="*" x="402" y="195" zoom="true"/>
+        <Node id="homett.xhtml" x="552" y="133" zoom="true"/>
+        <Node id="registro_nino.xhtml" x="158" y="134" zoom="true"/>
+    </Scope>
     <Scope Scope="All Faces Configurations"/>
 </Scene>

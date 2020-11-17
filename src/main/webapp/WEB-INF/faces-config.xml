@@ -23,15 +23,15 @@
               xmlns="http://xmlns.jcp.org/xml/ns/javaee"
               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
               xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_3.xsd">
-    <navegation-rule>
-        <from-view-id>/*</from-view-id>
+    <navigation-rule>
+        <from-view-id>*</from-view-id>
         <navigation-case>
             <from-outcome>crearDETT</from-outcome>
             <to-view-id>/registro_nino.xhtml</to-view-id>
         </navigation-case>
         <navigation-case>
             <from-outcome>listaDETT</from-outcome>
-            <to-view-id>/juego.xhtml</to-view-id>
+            <to-view-id>/homett.xhtml</to-view-id>
         </navigation-case>
-    </navegation-rule>
+    </navigation-rule>        
 </faces-config>
