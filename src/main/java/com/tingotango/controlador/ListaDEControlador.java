@@ -12,6 +12,7 @@ import co.edu.umanizales.listase.modelo.NodoDETT;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
@@ -43,12 +44,13 @@ public class ListaDEControlador implements Serializable {
     private List<Nino> listadoNinos;
     private List<Nino> listadoNinoEliminados;
     private List<NinoOportunidad> listadoOportunidades;
+    private NinoOportunidad ninoSeleccionado;
     private Nino NinoGuardar;
     private ListaDETT listaNinosDETT;
     private Nino ninoMostrarDETT;
     private NodoDETT tempDETT;
     private Nino ninoEncontradoDETT;
-    private byte Oportunidades;
+    private byte oportunidades;
     private byte cantidadNinos;
     private NodoDETT tempColor;
     private byte generadorDeID;
@@ -109,6 +111,46 @@ public class ListaDEControlador implements Serializable {
         colIzq = "#F9E79F";
         colParar = "#F9E79F";
         tempColor = listaNinosDETT.getCabeza();
+    }
+
+    public NinoOportunidad getNinoSeleccionado() {
+        return ninoSeleccionado;
+    }
+
+    public void setNinoSeleccionado(NinoOportunidad ninoSeleccionado) {
+        this.ninoSeleccionado = ninoSeleccionado;
+    }
+
+    public String getTextoBotonParar() {
+        return textoBotonParar;
+    }
+
+    public void setTextoBotonParar(String textoBotonParar) {
+        this.textoBotonParar = textoBotonParar;
+    }
+
+    public DefaultDiagramModel getModelTable() {
+        return modelTable;
+    }
+
+    public void setModelTable(DefaultDiagramModel modelTable) {
+        this.modelTable = modelTable;
+    }
+
+    public boolean isEstadoParar() {
+        return estadoParar;
+    }
+
+    public void setEstadoParar(boolean estadoParar) {
+        this.estadoParar = estadoParar;
+    }
+
+    public String getColParar() {
+        return colParar;
+    }
+
+    public void setColParar(String colParar) {
+        this.colParar = colParar;
     }
 
     public List<Nino> getListadoNinoEliminados() {
@@ -184,11 +226,11 @@ public class ListaDEControlador implements Serializable {
     }
 
     public byte getOportunidades() {
-        return Oportunidades;
+        return oportunidades;
     }
 
-    public void setOportunidades(byte Oportunidades) {
-        this.Oportunidades = Oportunidades;
+    public void setOportunidades(byte oportunidades) {
+        this.oportunidades = oportunidades;
     }
 
     public NodoDETT getTempColor() {
@@ -343,17 +385,104 @@ public class ListaDEControlador implements Serializable {
 //            diagramaDerecha();
 //        }
 //    }
-    public void eliminarDirecta() {
+    public void sacarNinas() {
+
+        int contador = listaNinosDETT.contarNiños("niña");
+        int cont = listaNinosDETT.contarNiños("niño");
+        if (cont == 1) {
+            JsfUtil.addErrorMessage("No puede quedar un solo niño en el juego");
+        } else {
+            if (contador != listaNinosDETT.contarNodos()) {
+                guardarNiñas();
+                listaNinosDETT.eliminarNiños("niña");
+                tempColor = listaNinosDETT.getCabeza();
+                diagramaDerecha();
+            } else {
+                JsfUtil.addErrorMessage("Solo hay niñas , el juego no puede quedar vacio");
+            }
+        }
+    }
+
+    public void sacarNinos() {
+        int contador = listaNinosDETT.contarNiños("niño");
+        int cont = listaNinosDETT.contarNiños("niña");
+        if (cont == 1) {
+            JsfUtil.addErrorMessage("No puede quedar una sola niña en el juego");
+        } else {
+            if (contador != listaNinosDETT.contarNodos()) {
+                guardarNiños();
+                listaNinosDETT.eliminarNiños("niño");
+                tempColor = listaNinosDETT.getCabeza();
+                diagramaDerecha();
+            } else {
+                JsfUtil.addErrorMessage("Solo hay niños , el juego no puede quedar vacio");
+            }
+        }
+    }
+
+    public void reingresarPosicion() {
+        ninoReingresar.setOportunidades(xIngreso);
+        listaNinosDETT.adicionarNodoPorPosicion(ninoReingresar, posicion);
+        diagramaIzquierda();
+        listadoOportunidades.remove(ninoReingresar);
+        ninoReingresar = new NinoOportunidad();
+        JsfUtil.addSuccessMessage("Se ha reingreso el niño a la lista");
+        listaNinosDETT.mostrarLista();
+    }
+
+    public void eliminarDirecto() {
 
         listadoOportunidades.add(tempColor.getDato2());
         listaNinosDETT.eliminar(tempColor.getDato2());
         tempColor = listaNinosDETT.getCabeza();
         diagramaDerecha();
-
     }
 
-    public void seleccionarNino(NinoOportunidad oportunidad) {
-        ninoReingresar = oportunidad;
+    public void reingresarNiñas(NinoOportunidad ninoEliminado) {
+        int cont = 0;
+        List<NinoOportunidad> listaTemporal = new ArrayList<>();
+        for (NinoOportunidad Eliminado : listadoOportunidades) {
+            if (Eliminado.getDato2().getSexo().equals("Femenino")) {
+                Eliminado.setOportunidades(xGenero);
+                listaNinosDETT.adicionarNodoCircular(Eliminado);
+                listaTemporal.add(Eliminado);
+                cont++;
+            }
+        }
+        listadoOportunidades.removeAll(listaTemporal);
+        diagramaDerecha();
+        if (cont == 0) {
+            JsfUtil.addErrorMessage("No hay Niñas para Reingresar");
+        }
+    }
+
+    public void reingresarNiños(NinoOportunidad ninoEliminado) {
+        int cont = 0;
+        List<NinoOportunidad> listaTemporal = new ArrayList<>();
+        for (NinoOportunidad Eliminado : listadoOportunidades) {
+            if (Eliminado.getDato2().getSexo().equals("Masculino")) {
+                Eliminado.setOportunidades(xGenero);
+                listaNinosDETT.adicionarNodoCircular(Eliminado);
+                listaTemporal.add(Eliminado);
+                cont++;
+            }
+        }
+        listadoOportunidades.removeAll(listaTemporal);
+        diagramaDerecha();
+        if (cont == 0) {
+            JsfUtil.addErrorMessage("No hay Niños para Reingresar");
+        }
+    }
+
+    public void reiniciar() {
+
+        listaNinosDETT.setCabeza(null);
+        listadoOportunidades.clear();
+        diagramaDerecha();
+    }
+
+    public void seleccionarNino(NinoOportunidad nino) {
+        ninoReingresar = nino;
     }
 
     public void capturarNinoEditar(Nino nino) {
@@ -370,10 +499,19 @@ public class ListaDEControlador implements Serializable {
 
     }
 
+    public int contarInfantes() {
+
+        int tamanio = listadoNinos.size();
+        return tamanio;
+    }
+
+    public int contarNinosEliminados() {
+        int tamanio = listadoOportunidades.size();
+        return tamanio;
+    }
+
     public void eliminarNino(Nino nino) {
-
         listadoNinos.remove(nino);
-
     }
 
     public DiagramModel getModel() {
@@ -397,16 +535,62 @@ public class ListaDEControlador implements Serializable {
         return "crearDETT";
     }
 
-    public void guardarNinos() {
+    public void guardarNiñas() {
         int cont = 0;
-        for (NinoOportunidad eliminarNino : listaNinosDETT.eliminarPorGeneroNino("Femenino")) {
+        for (NinoOportunidad eliminarNino : listaNinosDETT.eliminarNina(femenino)) {
             if (eliminarNino.getDato2() instanceof Nino) {
                 listadoOportunidades.add(eliminarNino);
                 cont++;
             }
         }
-        ninoEncontradoDETT = new Nino();
-        JsfUtil.addSuccessMessage("Se ha adicionado el niño a la lista");
+        if (cont == 0) {
+
+            JsfUtil.addErrorMessage("No hay Niñas para retirar del juego");
+        }
+    }
+
+    public void guardarNiños() {
+        int cont = 0;
+        for (NinoOportunidad eliminarNino : listaNinosDETT.eliminarNino(masculino)) {
+            if (eliminarNino.getDato2() instanceof Nino) {
+                listadoOportunidades.add(eliminarNino);
+                cont++;
+            }
+        }
+        if (cont == 0) {
+            JsfUtil.addErrorMessage("No hay Niños para retirar del juego");
+        }
+    }
+
+    public void reingresarNiño() {
+
+        ninoReingresar.setOportunidades(xIngreso);
+
+        switch (seleccionUbicacionDETT) {
+
+            case 1:
+                listaNinosDETT.adicionarNodoCircular(ninoReingresar);
+                seleccionUbicacionDETT = 0;
+
+                break;
+            case 2:
+                listaNinosDETT.adicionarNodoAlFinalNino(ninoReingresar);
+                seleccionUbicacionDETT = 0;
+                ;
+                break;
+
+            default:
+                listaNinosDETT.adicionarNodoAlFinalNino(ninoReingresar);
+                seleccionUbicacionDETT = 0;
+
+        }
+
+        listadoOportunidades.remove(ninoReingresar);
+        diagramaDerecha();
+        ninoReingresar = new NinoOportunidad();
+
+        JsfUtil.addSuccessMessage("Se ha reingreso el niño a la lista");
+
     }
 
     public String irHomeTT() {
@@ -424,12 +608,42 @@ public class ListaDEControlador implements Serializable {
         return tamanio1;
     }
 
-    public void ninoEditar(Nino nino) {
-        listaNinosDETT.eliminar(nino);
-        guardarNinos();
+    public void seleccionarInfante(NinoOportunidad nino) {
+
+        ninoReingresar = nino;
     }
 
+    public void ninoEditar(Nino nino) {
+        listadoNinos.remove(nino);
+        NinoGuardar = nino;
+    }
+
+    public void eliminarGenero(NinoOportunidad nino) {
+
+        listadoOportunidades.add(nino);
+        listaNinosDETT.eliminar(nino);
+        tempColor = listaNinosDETT.getCabeza();
+        diagramaDerecha();
+
+    }
+
+    public void reingresarIndividual() {
+
+        listaNinosDETT.adicionarNodoCircular(ninoReingresar);
+        listadoOportunidades.remove(ninoReingresar);
+        diagramaDerecha();
+        ninoReingresar = new NinoOportunidad();
+
+    }
+
+    public void reingresarNino(NinoOportunidad ninoEliminado) {
+
+        listaNinosDETT.adicionarNodoCircular(ninoEliminado);
+        diagramaDerecha();
+        listadoOportunidades.remove(ninoEliminado);
+    }
     //FUNCIONALIDADES DIRECCIONALES
+
     public void pasarSiguienteDerColor() {
         if (tempColor.getSiguiente() != null) {
             tempColor = tempColor.getSiguiente();
@@ -638,6 +852,51 @@ public class ListaDEControlador implements Serializable {
         } else {
 
         }
+
+    }
+
+    public void configurarJuego() {
+
+        List<Nino> listaTemporal = new ArrayList<>();
+
+        if (cantidadNinos > contarNinos()) {
+
+            JsfUtil.addErrorMessage("No tiene los suficientes niños para jugar ");
+
+        } else {
+
+            int cont = 0;
+            int maximo = listadoNinos.size();
+
+            for (int i = 0; i < maximo; i++) {
+
+                Random r = new Random();
+                int inicio = 0;
+                int fin = listadoNinos.size();
+                int result = r.nextInt(fin - inicio) + inicio;
+
+                if (cantidadNinos == cont) {
+                    break;
+                }
+
+                System.out.println("SI ENTRA AGREGAR");
+
+                ninoSeleccionado = new NinoOportunidad(listadoNinos.get(result), (byte) oportunidades);
+
+                listaNinosDETT.adicionarNodoCircular(ninoSeleccionado);
+                listaTemporal.add(ninoSeleccionado);
+                listadoNinos.remove(ninoSeleccionado.getDato2());
+                cont++;
+
+            }
+
+            listadoNinos.addAll(listaTemporal);
+
+        }
+
+        listaNinosDETT.mostrarLista();
+        tempColor = listaNinosDETT.getCabeza();
+        diagramaDerecha();
 
     }
 

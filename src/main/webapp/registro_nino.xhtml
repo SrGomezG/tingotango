@@ -14,91 +14,69 @@ and open the template in the editor.
         Registro de ninos - Formulario
     </ui:define>
     <ui:define name="content">
-        <p:growl id="grwlErroresNino"/>
-        <h:form id="frmNino" prependId="false"/>
-        
-        <p:panel header="Registro de niños">
-            <p:panelGrid columns="2">
-                <p:outputLabel value="Id"/>
-                <p:spinner value="#{listaDEControlador.ninoEncontradoDETT.id}" min="1" required="true"/>
-                <p:outputLabel value="Nombre"/>
-                <p:inputText value="#{listaDEControlador.ninoEncontradoDETT.nombre}" required="true"/>
-                <p:outputLabel value="Sexo"/>
-                <p:inputText value="#{listaDEControlador.ninoEncontradoDETT.sexo}" required="true"/>                              
-                </p:selectOneMenu>
-                
-                <p:commandButton value="Guardar" action="#{listaDEControlador.guardarNino()}" update="grwlErrores,frmNino">
-                </p:commandButton>
-                
-                <p:commandButton value="Limpiar" update="@all" action="#{listaDEControlador.irCrearNinoDETT()}">
-                    <p:ajax update="frmNino" listener="#{listaDEControlador.irCrearNinoDETT()}"/>
-                </p:commandButton>
-                
-            </p:panelGrid>    
-            
-        </p:panel>
+        <h:form id="frmNino" prependId="false">
+            <p:panel header="BIENVENIDO AL TINGO TANGO">
+            </p:panel>
+            <p:panel header="Por Favor Ingrese a los jugadores" footer="(*SIGNIFICA OBLIGATORIO)">
+                <p:growl id="grwlErroresNino"/>
+                <p:panelGrid columns="2">
+                    <p:outputLabel value="IDENTIFICACIÓN*"/>
+                    <p:spinner value="#{listaDEControlador.generadorDeID}" min="1" required="true"/>
+                    <p:outputLabel value="NOMBRE*"/>
+                    <p:inputText value="#{listaDEControlador.ninoGuardar.nombre}" required="true"/>
+                    <p:outputLabel value="SEXO*"/>
+                    <p:selectOneMenu id="Sexo"  required="true" value="#{listaDEControlador.ninoGuardar.sexo}" >
+                        <f:selectItem itemLabel="SELECCIONE SEXO" itemEscaped="true"  />
+                        <f:selectItem itemValue="MASCULINO" itemLabel="MASCULINO" />
+                        <f:selectItem itemValue="FEMENINO" itemLabel="FEMENINO"/>
+                    </p:selectOneMenu>
+                    <p:commandButton value="Guardar" update="frmNino,grwlErroresNino,listaNinos" action="#{listaDEControlador.adicionarArray()}"/>
+                    <p:commandButton value="Limpiar" update="frmNino,grwlErroresNino" action="#{listaDEControlador.irCrearNinoDETT()}"/>
+                </p:panelGrid>           
+            </p:panel>
         </h:form>
-        
         <h:form id="listaNinos">
-            <p:dataTable style="width: 900px" var="nino" value="#{listaDEControlador.listaNinosDETT}">
-                <p:column headerText="Id">
-                    <h:outputText value="#{nino.id}"/>
+            <p:dataTable style="width: 900px" var="Nino" value="#{listaDEControlador.listadoNinos}">
+                <p:column headerText="IDENTIFICACIÓN">
+                    <h:outputText value="#{Nino.id}"/>
                 </p:column>
-                <p:column headerText="Nombre">
-                    <h:outputText value="#{nino.nombre}"/>
+                <p:column headerText="NOMBRE">
+                    <h:outputText value="#{Nino.nombre}"/>
                 </p:column>
-                <p:column headerText="Sexo">
-                    <h:outputText value="#{nino.sexo}"/>
+                <p:column headerText="SEXO">
+                    <h:outputText value="#{Nino.sexo}"/>
                 </p:column>
-                <p:column headerText="Editar">
+                <p:column headerText="EDITAR">
                     <p:commandButton value="Editar"
                                      oncomplete="PF('dlgActualizar).show()">
-                        <p:ajax listener="#{listaDEControlador.ninoEditar(nino)}"
-                                immediate="true" update="listaNinos"/>
+                        <p:ajax listener="#{listaDEControlador.ninoEditar(nino)}" immediate="true" update="listaNinos"/>
                     </p:commandButton>
                 </p:column>
-                <p:column headerText="Borrar">
-                                    <p:commandButton value="Borrar" action="#{listaDEControlador.eliminarDirecta()}"
-                                     update="frmNino,grwlErroresNino,listaNinos"  immediate="true"  ajax="false" />
+                <p:column headerText="BORRAR">
+                    <p:commandButton value="Borrar" action="#{listaDEControlador.eliminarDirecto()}"
+                                     update="frmNino,grwlErroresNino,listaNinos"  immediate="true"  ajax="false">
+                    </p:commandButton>
                 </p:column>
             </p:dataTable>
-            
             <p:dialog header="actualizar " widgetVar="dlgActualizar" modal="true" height="200"  closeOnEscape="true">
                 <p:panel id="pnlActualizar" header="Datos Ninos">
                     <h:panelGrid columns="2">
-
                         <h:outputText value="Nombre"/>
-                        <p:inputText  value="#{listaDEControlador.guardarNinos.nombre}" required="true" />
-
+                        <p:inputText  value="#{listaDEControlador.ninoGuardar.nombre}" required="true"/>
                         <h:outputText value="Identificador" />
-                        <h:outputText value="#{listaDEControlador.guardarNinos.id}"/>
-
+                        <h:outputText value="#{listaDEControlador.ninoGuardar.id}"/>
                         <p:outputLabel value="Sexo"/>
-
-                        <p:selectOneMenu id="Sexo"  required="true" value="#{listaDEControlador.guardarNinos.sexo}" >
-
-                            <f:selectItem itemLabel="Seleccione uno" itemEscaped="true"  />
-                            <f:selectItem itemValue="Masculino" itemLabel="Masculino" />
+                        <p:selectOneMenu id="Sexo"  required="true" value="#{listaDEControlador.ninoGuardar.sexo}">
+                            <f:selectItem itemLabel="Seleccione Sexo" itemEscaped="true"/>
+                            <f:selectItem itemValue="Masculino" itemLabel="Masculino"/>
                             <f:selectItem itemValue="Femenino" itemLabel="Femenino"/>
-
                         </p:selectOneMenu>
-
                         <p:commandButton value="Actualizar" action="#{listaDEControlador.actualizarNino()}"
-                                         update="frmNino,grwlErroresNino,listaNinos" /> 
-
-
+                                         update="frmNino,grwlErroresNino,listaNinos"> 
+                        </p:commandButton>
                     </h:panelGrid>
-
-
-
                 </p:panel>
             </p:dialog>
-            
         </h:form>
-
     </ui:define>
-</p:panelGrid>
-</p:panel>
-</ui:define>
-
 </ui:composition>
