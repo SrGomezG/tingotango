@@ -73,6 +73,7 @@ public class ListaNinosControlador implements Serializable {
         listadoNinos.add(new Nino("Natalia", false, (byte) 6));
 
         listadoOportunidades = new ArrayList<>();
+
         listadoDETT = new ListaDETT();
         temp = listadoDETT.getCabeza();
         reiniciar = "Comenzar";
@@ -223,13 +224,13 @@ public class ListaNinosControlador implements Serializable {
     }
 
     public void guardarNino() {
-        boolean idExistente = false;
-        for (Nino nino1 : listadoNinos) {
-            if (nino1.getId() == ninoGuardar.getId()) {
-                idExistente = true;
+        boolean id = false;
+        for (Nino nino : listadoNinos) {
+            if (nino.getId() == ninoGuardar.getId()) {
+                id = true;
             }
         }
-        if (idExistente == true) {
+        if (id == true) {
             JsfUtil.addErrorMessage("El ID ya se encuentra tomado, ingrese otro");
         } else {
             listadoNinos.add(ninoGuardar);
@@ -253,15 +254,19 @@ public class ListaNinosControlador implements Serializable {
     }
 
     public void participantes() {
+
         listadoDETT = new ListaDETT();
         listadoOportunidades = new ArrayList<>();
         if (cantidadNinos > listadoNinos.size()) {
-            JsfUtil.addErrorMessage("La cantidad de niños es mayor a la existente");
+
+            JsfUtil.addErrorMessage("La cantidad de infantes es ,mayor a la existente");
+
         } else {
+
             arrayAleatorio = new int[cantidadNinos];
             int i = 0, rango = listadoNinos.size();
             arrayAleatorio[i] = (int) (Math.random() * rango);
-            for (i = 1; 1 < cantidadNinos; i++) {
+            for (i = 1; i < cantidadNinos; i++) {
                 arrayAleatorio[i] = (int) (Math.random() * rango);
                 for (int j = 0; j < i; j++) {
                     if (arrayAleatorio[i] == arrayAleatorio[j]) {
@@ -270,9 +275,11 @@ public class ListaNinosControlador implements Serializable {
                 }
             }
             for (int k = 0; k < cantidadNinos; k++) {
+
                 Nino nino = listadoNinos.get(arrayAleatorio[k]);
                 listadoDETT.adicionarNodoCircularTT(nino);
                 ninoOportunidades(nino);
+
             }
             ayudanteColor = listadoDETT.getCabeza();
             inicializarModelo();
@@ -280,7 +287,7 @@ public class ListaNinosControlador implements Serializable {
     }
 
     public void inicializarModelo() {
-        //Instanciar e modelo
+        //Instanciar el modelo
         model = new DefaultDiagramModel();
         //Definirle al modelo la cantidad de enlaces -1 (infinito)
         model.setMaxConnections(-1);
@@ -300,16 +307,16 @@ public class ListaNinosControlador implements Serializable {
             double X = 0;
             double Y = 0;
             while (ayudante.getSiguiente() != listadoDETT.getCabeza()) {
-                Element infantePintar = new Element(ayudante.getDato().getNombre(), posX + "em", posY + "em");
+                Element ninoPintar = new Element(ayudante.getDato().getNombre(), posX + "em", posY + "em");
 
                 if (ayudante.getDato().getId() == ayudanteColor.getDato().getId()) {
 
-                    infantePintar.setStyleClass("ui-diagram-success");
+                    ninoPintar.setStyleClass("ui-diagram-success");
                 }
 
-                infantePintar.addEndPoint(new BlankEndPoint(EndPointAnchor.CONTINUOUS));
-                infantePintar.addEndPoint(new BlankEndPoint(EndPointAnchor.CONTINUOUS));
-                model.addElement(infantePintar);
+                ninoPintar.addEndPoint(new BlankEndPoint(EndPointAnchor.CONTINUOUS));
+                ninoPintar.addEndPoint(new BlankEndPoint(EndPointAnchor.CONTINUOUS));
+                model.addElement(ninoPintar);
                 ayudante = ayudante.getSiguiente();
                 X = X + R;
                 Y = Y + R;
@@ -319,16 +326,16 @@ public class ListaNinosControlador implements Serializable {
                 posY = posY + ((Math.cos(Yrad)) * 10);
 
             }
-            Element infantePintar = new Element(ayudante.getDato().getNombre(), posX + "em", posY + "em");
+            Element ninoPintar = new Element(ayudante.getDato().getNombre(), posX + "em", posY + "em");
 
             if (ayudante.getDato().getId() == ayudanteColor.getDato().getId()) {
 
-                infantePintar.setStyleClass("ui-diagram-success");
+                ninoPintar.setStyleClass("ui-diagram-success");
             }
 
-            infantePintar.addEndPoint(new BlankEndPoint(EndPointAnchor.CONTINUOUS));
-            infantePintar.addEndPoint(new BlankEndPoint(EndPointAnchor.CONTINUOUS));
-            model.addElement(infantePintar);
+            ninoPintar.addEndPoint(new BlankEndPoint(EndPointAnchor.CONTINUOUS));
+            ninoPintar.addEndPoint(new BlankEndPoint(EndPointAnchor.CONTINUOUS));
+            model.addElement(ninoPintar);
             X = X + R;
             Y = Y + R;
             double Xrad = Math.toRadians(X);
@@ -369,13 +376,14 @@ public class ListaNinosControlador implements Serializable {
         return conn;
     }
 
-    public void estadoJugar() {
-        reiniciar = "Comenzar";
+     public void estadoJugar() {
+
+        reiniciar = "Iniciar";
         estadoCiclo = !estadoCiclo;
         if (estadoCiclo) {
             reiniciar = "Parar";
         }
-        quitaOportunidad();
+         quitaOportunidades();
         inicializarModelo();
     }
 
@@ -390,13 +398,13 @@ public class ListaNinosControlador implements Serializable {
         }
     }
 
-    public void quitaOportunidad() {
+     public void quitaOportunidades() {
         if (listadoDETT.getCabeza().getSiguiente() != listadoDETT.getCabeza()) {
             if (estadoCiclo == false) {
-                for (NinoOportunidad op1 : listadoOportunidades) {
-                    if (op1.getNino() == ayudanteColor.getDato()) {
-                        op1.setOportunidad(op1.getOportunidad() - 1);
-                        if (op1.getOportunidad() == 0) {
+                for (NinoOportunidad opor : listadoOportunidades) {
+                    if (opor.getNino() == ayudanteColor.getDato()) {
+                        opor.setOportunidad(opor.getOportunidad() - 1);
+                        if (opor.getOportunidad() == 0) {
                             listadoDETT.eliminarPosicion(ayudanteColor.getDato());
                             inicializarModelo();
                         }
@@ -405,13 +413,13 @@ public class ListaNinosControlador implements Serializable {
 
             }
         } else {
-            JsfUtil.addSuccessMessage("Ha ganado " + listadoDETT.getCabeza().getDato().getNombre());
+            JsfUtil.addSuccessMessage("el ganador es " + listadoDETT.getCabeza().getDato().getNombre());
         }
     }
 
-    public void seleccionarNino(NinoOportunidad op2) {
+    public void selecccionarNino(NinoOportunidad opor) {
 
-        ninoOportunidades = op2;
+        ninoOportunidades = opor;
     }
 
     public void reingresarPorPosicion() {
