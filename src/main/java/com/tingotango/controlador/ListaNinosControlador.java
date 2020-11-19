@@ -231,10 +231,10 @@ public class ListaNinosControlador implements Serializable {
             }
         }
         if (id == true) {
-            JsfUtil.addErrorMessage("El ID ya se encuentra tomado, ingrese otro");
+            JsfUtil.addErrorMessage("El ID ya se encuentra tomado, ingrese otro por favor");
         } else {
             listadoNinos.add(ninoGuardar);
-            JsfUtil.addSuccessMessage("Se ha agregado satisfactoriamente el nino " + ninoGuardar.getNombre());
+            JsfUtil.addSuccessMessage("Se ha agregado satisfactoriamente el/la niño/a " + ninoGuardar.getNombre());
             ninoGuardar = new Nino();
         }
     }
@@ -259,7 +259,7 @@ public class ListaNinosControlador implements Serializable {
         listadoOportunidades = new ArrayList<>();
         if (cantidadNinos > listadoNinos.size()) {
 
-            JsfUtil.addErrorMessage("La cantidad de infantes es ,mayor a la existente");
+            JsfUtil.addErrorMessage("La cantidad de niños es ,mayor a la existente");
 
         } else {
 
@@ -378,10 +378,10 @@ public class ListaNinosControlador implements Serializable {
 
      public void estadoJugar() {
 
-        reiniciar = "Iniciar";
+        reiniciar = "INICIAR";
         estadoCiclo = !estadoCiclo;
         if (estadoCiclo) {
-            reiniciar = "Parar";
+            reiniciar = "PARAR";
         }
          quitaOportunidades();
         inicializarModelo();
@@ -413,7 +413,7 @@ public class ListaNinosControlador implements Serializable {
 
             }
         } else {
-            JsfUtil.addSuccessMessage("el ganador es " + listadoDETT.getCabeza().getDato().getNombre());
+            JsfUtil.addSuccessMessage("el/la ganador/a es " + listadoDETT.getCabeza().getDato().getNombre());
         }
     }
 
@@ -461,7 +461,7 @@ public class ListaNinosControlador implements Serializable {
             }
             inicializarModelo();
         } else {
-            JsfUtil.addErrorMessage("No hay nadie Jugando");
+            JsfUtil.addErrorMessage("No hay niños jugando");
         }
     }
 
@@ -510,7 +510,7 @@ public class ListaNinosControlador implements Serializable {
                 inicializarModelo();
             }
         } else {
-            JsfUtil.addErrorMessage("No hay nadie Jugando");
+            JsfUtil.addErrorMessage("No hay niños Jugando");
         }
     }
 }

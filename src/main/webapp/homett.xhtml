@@ -19,11 +19,11 @@ and open the template in the editor.
     <ui:define name="content">
         <p:growl id="grwlErroresTT"/>
         <h:form id="frmNinos" prependId="false">
-            <p:panel id="pnlNinos" header=" Listado de jugadores" style="width:400px">
+            <p:panel id="pnlNinos" header="LISTADO DE JUGADORES" style="width:400px">
                 <p:panelGrid>
-                    <h:outputText value="Cantidad de Ninos"/>
+                    <h:outputText value="Cantidad de Niños"/>
                     <p:spinner value="#{listaNinosControlador.cantidadNinos}" min="2" required="true"/>
-                    <p:commandButton value="Ingresar" action="#{listaNinosControlador.participantes()}" 
+                    <p:commandButton value="INGRESAR" action="#{listaNinosControlador.participantes()}" 
                                      update=":grwlErroresTT, pnlNinos, pnlOportunidades, diagrama" />
                 </p:panelGrid>
                 <p:panelGrid>
@@ -44,7 +44,7 @@ and open the template in the editor.
                     </p:dataTable>
                 </p:panelGrid>
             </p:panel>
-            <p:panel id="pnlOportunidades" header=" Juego y Oportunidades" style="width:400px; position: absolute; top: 69px; left: 430px;">
+            <p:panel id="pnlOportunidades" header="NÚMERO DE OPORTUNIDADES POR JUGADOR" style="width:400px; position: absolute; top: 69px; left: 430px;">
                 <p:panelGrid>
                     <p:dataTable id="listaOportunidades" value="#{listaNinosControlador.listadoOportunidades}" 
                                  var="oportunidades">
@@ -64,7 +64,7 @@ and open the template in the editor.
                             <f:facet name="header">
                                 <p:outputLabel value=" Reingresar"/>
                             </f:facet>
-                            <p:commandButton value="seleccionar" disabled="#{oportunidades.oportunidad != 0}" immediate="true">
+                            <p:commandButton value="SELECCIONAR" disabled="#{oportunidades.oportunidad != 0}" immediate="true">
                                 <p:ajax listener="#{listaNinosControlador.selecccionarNino(opor)}" update=":grwlErroresTT"/>
 
                             </p:commandButton>
@@ -75,47 +75,50 @@ and open the template in the editor.
 
             <p:commandButton id="btnIniciar" value="#{listaNinosControlador.reiniciar}" 
                              action="#{listaNinosControlador.estadoJugar()}" 
-                             update="grwlErroresTT, pnlOportunidades, btnIniciar"/>
-            <p:poll interval="2" listener="#{listaNinosControlador.pasarColor()}" 
+                             update="grwlErroresTT, pnlOportunidades, btnIniciar, pnlTT"/>
+            <p:poll interval="1" listener="#{listaNinosControlador.pasarColor()}" 
                     rendered="#{listaNinosControlador.estadoCiclo}" update="diagrama"/> 
 
             <h:panelGrid columns="2" style="margin-bottom:10px" cellpadding="5">
-                <h:outputText value="Direccion: " />
+                <h:outputText value="DIRECCION: " />
+
+
                 <p:inputSwitch value="#{listaNinosControlador.direccion}" onLabel="Izquierda"  offLabel="Derecha"/>
+
             </h:panelGrid> 
 
-            <p:panel style="width:400px; position: absolute; top: 200px; left: 850px;">
+            <p:panel header="DAR POSICION DE REINGRESO" style="width:400px; position: absolute; top: 250px; left: 1075px;">
                 <p:panelGrid>
-                    <p:outputLabel value="Posicion: "/>
+                    <p:outputLabel value="POSICION: "/>
                     <p:inputNumber id="datobuscar" value="#{listaNinosControlador.posicionIngreso}" minValue="1" required="true"/>
                     <p:commandButton value="Reingresar" action="#{listaNinosControlador.reingresarPorPosicion()}" 
                                      update="grwlErroresTT, diagrama, pnlOportunidades"/>
                 </p:panelGrid> 
             </p:panel>
-            <p:panel style="width:150px; position: absolute; top: 300px; left: 850px;">
-                <h:outputText value="Oportunidades"/>
+            <p:panel header="OPORTUNIDADES NUEVAS"  style="width:200px; position: absolute; top: 250px; left:850px;">
+                <h:outputText value="ELIJA CANTIDAD DE VIDAS"/>
                 <p:spinner value="#{listaNinosControlador.op}" min="1"  max="3" required="true"/>
             </p:panel>
-            <p:panel style="width:400px; position: absolute; top: 69px; left: 850px;">
+            <p:panel header="REINGRESOS" style="width:400px; position: absolute; top: 69px; left: 850px;">
                 <p:panelGrid>
-                    <h:outputText value="Genero: "/>
+                    <h:outputText value="GENERO: "/>
                     <p:selectOneMenu id="genero" required="true" value="#{listaNinosControlador.sexo}">
-                        <f:selectItem itemLabel="Seleccione" itemEscaped="true"/>
-                        <f:selectItem itemValue="true" itemLabel="Masculino"/>
-                        <f:selectItem itemValue="false" itemLabel="Femenino"/>
+                        <f:selectItem itemLabel="SELECCIONE" itemEscaped="true"/>
+                        <f:selectItem itemValue="true" itemLabel="MASCULINO"/>
+                        <f:selectItem itemValue="false" itemLabel="FEMENINO"/>
                     </p:selectOneMenu>
-                    <p:commandButton value="Reingresar Genero" action="#{listaNinosControlador.ingresarPorGenero()}" 
+                    <p:commandButton value="REINGRESAR POR GENERO" action="#{listaNinosControlador.ingresarPorGenero()}" 
                                      update="grwlErroresTT, diagrama, pnlOportunidades"/>
 
-                    <p:commandButton value="Retirar por genero" action="#{listaNinosControlador.retirarPorGenero()}" 
+                    <p:commandButton value="RETIRAR POR GENERO" action="#{listaNinosControlador.retirarPorGenero()}" 
                                      update="grwlErroresTT, diagrama, pnlOportunidades"/>
                 </p:panelGrid>
             </p:panel>
         </h:form>   
-
-        <p:diagram id="diagrama" value="#{listaNinosControlador.model}" style="height:600px;"
-                   styleClass="ui-widget-content"/>
-
+        <p:panel id="pnlTT" header="TINGO TANGO JUGADORES" style="width:1000px">
+            <p:diagram id="diagrama" value="#{listaNinosControlador.model}" style="height:600px;"
+                       styleClass="ui-widget-content"/>
+        </p:panel>
     </ui:define>
 
 </ui:composition>
