@@ -11,152 +11,127 @@ and open the template in the editor.
                 xmlns:h="http://xmlns.jcp.org/jsf/html"
                 xmlns:f="http://xmlns.jcp.org/jsf/core">
 
+    <ui:define name="juego_tingo_tango">
+        Tingo Tango - Juego
 
-    <ui:define name="titulo_tingo_tango">
-        TINGO TANGO
     </ui:define>
+
     <ui:define name="content">
-        <h:form id="frmTT" prependId="false" >
+
+
+        <h:form id="frmTT" >
             <p:growl id="grwlErroresTT"/>
-            <p:dashboard id="tabla" model="#{listaDEControlador.model}" >
-                <p:panel id="acciones" header="ACCIONES JUEGO" style="border: #045491" >
-                    <h:panelGrid columns="3" cellpadding = "10" cellspacing = "1" style="width:700px " >
-                        <p:commandButton value="CONFIGURAR JUEGO" style="color: #045491" update="pnlConfigurar"
-                                         disabled="#{listaDEControlador.listaNinosDETT.cabeza != null}" 
-                                         oncomplete="PF('dlgConfigurar').show()">
-                        </p:commandButton>
-                    </h:panelGrid>
-                    <p:selectOneMenu id="ingresarGenero"  value="#{listaDEControlador.generoIngresar}" required="" >
-                        <f:selectItem itemLabel="Seleccione" itemEscaped="true"  />
-                        <f:selectItem itemValue="1"  itemLabel="Masculino" />
-                        <f:selectItem itemValue="2" itemLabel="Femenino" />
-                    </p:selectOneMenu> 
+            <p:panel id="panelNinos" header="Listado de jugadores = #{listaDEControlador.listaNinosDETT.contarNodos()} ">
 
-                    <p:column>
-
-                        <h:outputText  value="Oportunidades"/>
-                        <p:spinner value="#{listaDEControlador.getxGenero}" required="true" min="1 "  max="#{listaDEControlador.oportunidades}"/>
-                        <p:commandButton value="Reingresar"  action="#{listaDEControlador.reingresarPorGenero}"
-                                         update="frmTT" disabled="#{listaDEControlador.listaNinosDETT.cabeza == null}" />
-                    </p:column>
+                <p:column>
+                    <h:outputText  value="Oportunidades"/>
+                    <p:spinner value="#{listaDEControlador.oporGenero}" required="true" min="1 "  max="#{listaDEControlador.oportunidades}"/>
+                    <p:commandButton value="Reingresar"  action="#{listaDEControlador.reingresarPorGenero}"
+                                     update="frmTT" disabled="#{listaDEControlador.listaNinosDETT.cabeza == null}" />
+                </p:column>
 
 
+                <h:form id="frmBotones">
+                    <p:panel id="panelBotones" header="Acciones">
+                        <p:panelGrid columns="2" >
+                            <p:commandButton id="btnDer" value="#{listaDEControlador.textoBotonDer}" 
+                                             disabled="#{listaDEControlador.listaNinosDETT.cabeza == null}" 
+                                             style="color:#{listaDEControlador.colDer} !important;"
+                                             action="#{listaDEControlador.controlarDerecha()}" update="btnDer">
 
-                    <p:commandButton id="btnIniciarDer" value="#{listaDEControlador.textoBotonDer}" 
-                                     disabled="#{listaDEControlador.listaNinosDETT.cabeza == null}" 
-                                     style="color:#{listaDEControlador.colDer} !important;"
-                                     action="#{listaDEControlador.controlarDerecha()}" update="frmTT,grwlErroresTT">
+                                <p:poll interval="1" listener="#{listaDEControlador.pasarSiguienteDerColor()}" 
+                                        rendered="#{listaDEControlador.diagramaDerecha()}"  update="Grafica,btnDer"/>
 
-                        <p:poll interval="1" listener="#{listaDEControlador.pasarSiguienteDerColor()}" 
-                                rendered="#{listaDEControlador.estadoDer}"  update="Grafica"/>
-                    </p:commandButton>
-
-                    <p:menubar>
-
-                        <p:submenu label="Retirar por genero" icon="pi pi-briefcase" disabled="#{listaDEControlador.listaNinosDETT.cabeza == null}"  >
-                            <p:menuitem value="Niñas" ajax="false" action="#{listaDEControlador.sacarNinas()}"    update="@form,grwlErroresTT"/>
-                            <p:menuitem value="Niños" ajax="false" action="#{listaDEControlador.sacarNinos()}"    update="@form,grwlErroresTT"/>
-                        </p:submenu>
-
-                    </p:menubar>
-
-                    <p:column></p:column>
-
-                    <p:commandButton id="btnIniciarIzq" value="#{listaDEControlador.textoBotonIzq}" 
-                                     disabled="#{listaDEControlador.listaNinosDETT.cabeza == null}"
-                                     style="color:#{listaDEControlador.colIzq} !important;"
-                                     action="#{listaDEControlador.controlarIzquierda()}" update="frmTT,grwlErroresTT" >
-                        <p:poll  interval="1"  listener="#{listaDEControlador.pasarAnteriorDerColor()}" 
-                                 rendered="#{listaDEControlador.estadoIzq}"  update="Grafica" />
-                    </p:commandButton> 
-                    <p:commandButton value="Reiniciar juego" action="#{listaDEControlador.reiniciar()}" disabled="#{listaDEControlador.listaNinosDETT.cabeza == null}"  
-                                     update="frmTT">
-                    </p:commandButton>
-                </p:panel>
-            </p:dashboard>
+                            </p:commandButton>
+                            <p:commandButton id="btnIzq" value="#{listaDEControlador.textoBotonIzq}" 
+                                             disabled="#{listaDEControlador.listaNinosDETT.cabeza == null}"
+                                             style="color:#{listaDEControlador.listaNinosDETT.cabeza} !important;"
+                                             action="#{listaDEControlador.controlarDerecha()}" update="btnIzq">
+                                <p:poll  interval="1"  listener="#{listaDEControlador.pasarAnteriorDerColor()}" 
+                                         rendered="#{listaDEControlador.diagramaIzquierda()}"  update="Grafica,btnIzq" />
+                            </p:commandButton> 
+                            <p:commandButton id="btnReiniciar" value="Reiniciar juego" action="#{controladorTingoTango.reiniciar()}" disabled="#{controladorTingoTango.listaNiñosDEC.cabezaInfante == null}"  
+                                             update="btnReiniciar, Grafica">
+                            </p:commandButton>
+<!--
+                            <p:panel id="lista" header="LISTA NIÑOS ELIMINADOS:: #{listaDEControlador.contarNinosEliminados()}" style="border: #045491"  >
+                                <p:dataTable   style="width: 1000px" var="infanteEliminado" value="#{listaDEControlador.listadoOportunidades}">
+                                    <p:column headerText="NOMBRE">
+                                        <h:outputText value="#{infanteEliminado.Nino.nombre}" />
+                                    </p:column>
+                                    <p:column headerText="ID">
+                                        <h:outputText value="#{infanteEliminado.infante.identificador}" />
+                                    </p:column>
+                                    <p:column headerText="GENERO">
+                                        <h:outputText value="#{infanteEliminado.infante.genero}" />
+                                    </p:column>
+                                    <p:column headerText="SELECCIONAR">
+                                        <p:commandButton  value="Seleccionar" 
+                                                          action="#{controladorTingoTango.seleccionarInfante(infanteEliminado)}" immediate="true" update="frmTingoTngo"  >
+                                        </p:commandButton>
+                                    </p:column>
+                                </p:dataTable>
+                          -->      
+                                <p:panel header="Reingresar"  >
+                                    <p:panelGrid columns="2">
+                                        <p:outputLabel value="Nombre"/>
+                                        <p:outputLabel   value="#{listaDEControlador.infanteReingresar.infante.nombre}" />
+                                        <p:outputLabel  value="Identificador"/>
+                                        <p:outputLabel  value="#{controladorTingoTango.infanteReingresar.infante.identificador}"  />
+                                        <p:outputLabel  value="Oportunidades"/>
+                                        <p:spinner  value="#{controladorTingoTango.numOporIngreso}" min="1" max="#{controladorTingoTango.numOportunidades}"/>
+                                        <p:commandButton  value="Reingresar" action="#{controladorTingoTango.reingresarNiño()}" 
+                                                          update="frmTingoTngo" disabled="#{controladorTingoTango.listaNiñosDEC.cabezaInfante == null}" >
+                                        </p:commandButton>
+                                        <p:selectOneMenu id="ingresarEnPosicion"  value="#{controladorTingoTango.seleccionUbicacion}" required="" >
+                                            <f:selectItem itemLabel="Reingresar en posición" itemEscaped="true"  />
+                                            <f:selectItem itemValue="1"  itemLabel="Al inicio" />
+                                            <f:selectItem itemValue="2" itemLabel="Al final" />                             
+                                        </p:selectOneMenu>
+                                        <h:outputText  value="Posicion especifica"/>
+                                        <p:spinner value="#{controladorTingoTango.posicion}" required="true" min="1 "  max="#{controladorTingoTango.contarInfantes()}"/>                                          
+                                        <p:commandButton  value="Reingresar en posicion dada" action="#{controladorTingoTango.reingresarEnPosDada()}" 
+                                                          update="frmTingoTngo" disabled="#{controladorTingoTango.listaNiñosDEC.cabezaInfante == null}" >
+                                        </p:commandButton>
+                                    </p:panelGrid>
+                                </p:panel>
+                            </p:panel >
+                            <!--
+                            <p:commandButton value="Eliminar por Posición" disabled="#{listaDEController.listaPerrosDE.contarNodos() == 0}">
+                                <p:ajax listener="#{listaDEController.eliminarxPosicion()}" update="Formulario,formBotones,graficaDE"/> 
+        
+                                <p:spinner value="#{listaDEController.borrarPosicion}" min="1"  max="#{listaDEController.listaPerrosDE.contarNodosDE()}"/>
+                            </p:commandButton>
+                            <p:commandButton value="Eliminación directa"  disabled="#{listaDEController.listaPerrosDE.contarNodos() == 0}">
+                                <p:ajax listener="#{listaDEController.eliminacionDirecta()}" update="Formulario,formBotones,graficaDE"/> 
+                            </p:commandButton>
+                            <h:outputLabel value="INGRESE POSICIÓN 1  ::::::::::   INGRESE POSICIÓN 2"  />
+                            <p:column/>
+                            <p:commandButton value="Intercambiar posición" disabled="#{listaDEController.listaPerrosDE.contarNodos() == 0}">
+                                <p:ajax listener="#{listaDEController.intercambiarPosicionesDadas()}" update="Formulario,formBotones,graficaDE"/> 
+                                <p:spinner value="#{listaDEController.posicionUno}" min="1"  max="#{listaDEController.listaPerrosDE.contarNodosDE()}"/>
+                                <p:spinner value="#{listaDEController.posicionDos}" min="1"  max="#{listaDEController.listaPerrosDE.contarNodosDE()}"/>
+                            </p:commandButton>
+                            -->
+                        </p:panelGrid>
+                    </p:panel>
+                </h:form>
+            </p:panel>    
         </h:form>
+
+
+        <p:panel id="Grafica" header="TINGO TANGO  " style="width:800px"   >
+
+            <p:diagram   value="#{listaDEControlador.modelTable}" style="height: 700px" styleClass="ui-widget-content" >
+
+
+            </p:diagram>
+
+        </p:panel>
+
+
+
     </ui:define>
-
-
-    <p:panel id="lista" header="LISTA NIÑOS ELIMINADOS:: #{listaDEControlador.contarNinosEliminados()}" style="border: #045491"  >
-        <p:dataTable   style="width: 1000px" var="ninoEliminado" value="#{listaDEControlador.listadoOportunidades}">
-            <p:column headerText="NOMBRE">
-
-                <h:outputText value="#{ninoEliminado.dato2.nombre}" />
-            </p:column>
-
-            <p:column headerText="ID">
-                <h:outputText value="#{ninoEliminado.dato2.id}" />
-            </p:column>
-
-            <p:column headerText="SEXO">
-                <h:outputText value="#{ninoEliminado.dato2.sexo}" />
-            </p:column>
-
-            <p:column headerText="SELECCIONAR">
-                <p:commandButton  value="Seleccionar" 
-                                  action="#{listaDEControlador.seleccionarNino(ninoEliminado)}" immediate="true" update="frmTT"  >
-                </p:commandButton>
-            </p:column>
-        </p:dataTable>
-
-        <p:panel header="Reingresar"  >
-            <p:panelGrid columns="2">
-                <p:outputLabel value="Nombre"/>
-                <p:outputLabel   value="#{listaDEControlador.ninoReingresar.dato2.nombre}" />
-                <p:outputLabel  value="Identificador"/>
-                <p:outputLabel  value="#{listaDEControlador.ninoReingresar.dato2.id}"  />
-                <p:outputLabel  value="Oportunidades"/>
-                <p:spinner  value="#{listaDEControlador.getxGenero}" min="1" max="#{listaDEControlador.oportunidades}"/>
-                <p:commandButton  value="Reingresar" action="#{listaDEControlador.reingresarNino(ninoEliminado)}" 
-                                  update="frmTT" disabled="#{listaDEControlador.listaNinosDETT.cabeza == null}" >
-                </p:commandButton>
-
-                <p:selectOneMenu id="ingresarEnPosicion"  value="#{listaDEControlador.seleccionUbicacionDETT}" required="" >
-                    <f:selectItem itemLabel="Reingresar en posición" itemEscaped="true"  />
-                    <f:selectItem itemValue="1"  itemLabel="Al inicio" />
-                    <f:selectItem itemValue="2" itemLabel="Al final" />
-                </p:selectOneMenu>
-
-                <h:outputText  value="Posicion especifica"/>
-                <p:spinner value="#{listaDEControlador.posicion}" required="true" min="1 "  max="#{listaDEControlador.contarNinos()}"/>             
-                <p:commandButton  value="Reingresar en posicion dada" action="#{controladorTingoTango.reingresarEnPosDada()}" 
-                                  update="frmTT" disabled="#{listaDEControlador.listaNinosDETT.cabeza == null}" >
-                </p:commandButton>
-
-            </p:panelGrid>
-        </p:panel>
-    </p:panel >
-    <p:panel id="Grafica" header="TINGO TANGO  " style="width:800px"   >
-        <p:diagram   value="#{listaDEControlador.modelTable}" style="height: 700px" styleClass="ui-widget-content" >
-        </p:diagram>
-    </p:panel>
-
-
-    <p:dialog header="CONFIGURAR " widgetVar="dlgConfigurar" modal="true" height="200"  closeOnEscape="true">
-        <p:panel id="pnlConfigurar" header="Datos juego">
-            <h:panelGrid columns="2">
-                <h:outputText value="Numero de niños:" />
-                <p:spinner value="#{listaDEControlador.cantidadNinos}" min="2" max="127"/>
-                <h:outputText value="Numero de oportunidades:" />
-                <p:spinner value="#{listaDEControlador.oportunidades}" min="1" max="127"/>
-                <p:commandButton value="Guardar" action="#{listaDEControlador.configurarJuego()}" update="frmTT" >
-                </p:commandButton>
-            </h:panelGrid>
-        </p:panel>
-    </p:dialog>
-
-    <p:dialog id="myDialogID" widgetVar="myDialogVar" closeOnEscape="true" modal="true" height="200"  > 
-        <p:panel id="pnlGanador" header="NIÑO GANADOR" style="background-color: #AFAFAF" >
-            <p:panelGrid columns="2" style="border: #98AFC7" >
-                <h:outputText value="NOMBRE" style="color: #036fab"  />
-                <h:outputText value="#{listaDEControlador.tempColor.dato2.nombre}"  style="color: #036fab"  />
-                <h:outputText value="ID" style="color: #036fab" />
-                <h:outputText value="#{listaDEControlador.tempColor.dato2.id}"  style="color: #036fab" />
-            </p:panelGrid>
-        </p:panel>
-    </p:dialog> 
-
 </ui:composition>
 
 

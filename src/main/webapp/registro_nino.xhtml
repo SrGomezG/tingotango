@@ -46,6 +46,7 @@ and open the template in the editor.
                 <p:column headerText="SEXO">
                     <h:outputText value="#{Nino.sexo}"/>
                 </p:column>
+            <!--    
                 <p:column headerText="EDITAR">
                     <p:commandButton value="Editar"
                                      oncomplete="PF('dlgActualizar).show()">
@@ -57,6 +58,7 @@ and open the template in the editor.
                                      update="frmNino,grwlErroresNino,listaNinos"  immediate="true"  ajax="false">
                     </p:commandButton>
                 </p:column>
+              -->  
             </p:dataTable>
             <p:dialog header="actualizar " widgetVar="dlgActualizar" modal="true" height="200"  closeOnEscape="true">
                 <p:panel id="pnlActualizar" header="Datos Ninos">
